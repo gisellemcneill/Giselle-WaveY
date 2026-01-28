@@ -1,4 +1,5 @@
 {
+  "tyoe": "module",
   "name": "memebot_discord",
   "version": "1.0.0",
   "description": "this is a demo project for teaching how to build a discord bot",
