@@ -1,26 +1,21 @@
-import loadFiles from "./loadFiles";
-import ascii from "ascii-table";
+import loadFiles from "./loadFiles.js";
 import path from "path";
+import AsciiTable from "ascii-table";
 
-export default function loadEvents(client, dirName) {
+export async function loadEvents(client, dirName) {
   client.events.clear();
 
   const files = loadFiles(dirName, ".js");
-  const table = new ascii("Events").setHeading("Event", "Status");
+  const table = new AsciiTable("Events").setHeading("Event", "Status");
 
   for (const file of files) {
-    const event = require(path.join(dirName, file)).default;
-
+    const { default: event } = await import(path.join(dirName, file));
     const execute = (...args) => event.execute(...args, client);
+
     client.events.set(event.name, execute);
 
-    if (event.rest) {
-      if (event.once) client.rest.once(event.name, execute);
-      else client.rest.on(event.name, execute);
-    } else {
-      if (event.once) client.once(event.name, execute);
-      else client.on(event.name, execute);
-    }
+    if (event.once) client.once(event.name, execute);
+    else client.on(event.name, execute);
 
     table.addRow(file, "✅");
   }

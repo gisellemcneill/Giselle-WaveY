@@ -2,23 +2,25 @@ import { Client, GatewayIntentBits, Partials, Collection } from "discord.js";
 import { loadEvents, loadCommands } from "./helpers/index.js";
 import path from "path";
 
-const TOKEN = process.env.TOKEN;
-
-const { Guilds, GuildMembers, GuildMessages, MessageContent } =
-  GatewayIntentBits;
-const { User, Message, GuildMember, ThreadMember } = Partials;
-
 const client = new Client({
-  intents: [Guilds, GuildMembers, GuildMessages, MessageContent],
-  partials: [User, Message, GuildMember, ThreadMember],
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent
+  ],
+  partials: [
+    Partials.User,
+    Partials.Message,
+    Partials.GuildMember,
+    Partials.ThreadMember
+  ]
 });
 
 client.events = new Collection();
-
-loadEvents(client, path.join(__dirname, "events"));
-
 client.commands = new Collection();
-loadCommands(client, path.join(__dirname, "commands"));
 
+await loadEvents(client, path.join(process.cwd(), "src/events"));
+await loadCommands(client, path.join(process.cwd(), "src/commands"));
 
-client.login(TOKEN);
+client.login(process.env.TOKEN);

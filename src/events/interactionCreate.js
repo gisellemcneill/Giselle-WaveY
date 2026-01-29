@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   name: "interactionCreate",
   async execute(interaction) {
     if (!interaction.isChatInputCommand()) return;
@@ -10,7 +10,7 @@ module.exports = {
       await command.execute(interaction);
     } catch (err) {
       console.error(err);
-      await interaction.reply({ content: "Something went wrong", ephemeral: true });
+      await interaction.reply({ content: "Something went wrong :(", ephemeral: true });
     }
-  },
+  }
 };

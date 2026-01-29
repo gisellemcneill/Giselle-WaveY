@@ -1,13 +1,10 @@
-const { SlashCommandBuilder } = require("discord.js");
+import { SlashCommandBuilder } from "@discordjs/builders";
 
-module.exports = {
+export default {
   data: new SlashCommandBuilder()
     .setName("trivia")
-    .setDescription("Start the trivia game"),
-
+    .setDescription("Start a trivia game!"),
   async execute(interaction) {
-    await interaction.reply({
-      content: "🎉 Trivia is starting! Get ready for the first question 👀",
-    });
-  },
+    await interaction.reply("Trivia game started! 🎉");
+  }
 };
