@@ -1,8 +1,8 @@
 {
   "type": "module",
-  "name": "memebot_discord",
+  "name": "trivia_discord",
   "version": "1.0.0",
-  "description": "this is a demo project for teaching how to build a discord bot",
+  "description": "this is a trivia bot to play a game with friends",
   "scripts": {
   "register": "node -r dotenv/config src/deploy-commands.js",
   "start": "node -r dotenv/config src/app.js",

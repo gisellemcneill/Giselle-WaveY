@@ -24,3 +24,4 @@ await loadEvents(client, path.join(process.cwd(), "src/events"));
 await loadCommands(client, path.join(process.cwd(), "src/commands"));
 
 client.login(process.env.TOKEN);
+
