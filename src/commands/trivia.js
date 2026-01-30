@@ -21,11 +21,13 @@ export default {
     .setDescription("Start a trivia game!"),
 
   async execute(interaction) {
-    const randomIndex = Math.floor(Math.random() * questions.length);
-    const selectedQuestion = questions[randomIndex];
+  await interaction.deferReply();
 
-    await interaction.reply(
-      `🧠 **Trivia Question:**\n${selectedQuestion.question}`
-    );
-  },
+  const randomIndex = Math.floor(Math.random() * questions.length);
+  const selectedQuestion = questions[randomIndex];
+
+  await interaction.editReply(`🧠 **Trivia Question:**\n${selectedQuestion.question}`);
+},
+
 };
+
