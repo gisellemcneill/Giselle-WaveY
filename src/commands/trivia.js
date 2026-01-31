@@ -1,5 +1,6 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
+import { SlashCommandBuilder, userMention } from "@discordjs/builders";
 import { activeTrivia } from "../helpers/activeTrivia.js";
+
 
 const questions = [
   {
@@ -28,10 +29,17 @@ export default {
   data: new SlashCommandBuilder()
     .setName("trivia")
     .setDescription("Start a trivia game!"),
-
+  
   async execute(interaction) {
 
     await interaction.deferReply();
+
+    const welcomeMsg = `
+    Welcome ${userMention(interaction.user.id)}, to the **WaveY Trivia Bot**! 🚀
+    To play the game, you will be given trivia questions and **four answers** to choose from.      
+    I will then tell you if you are ✅ **correct** or ❌ **incorrect**.
+    For help, type \`/\` to see my commands.   
+    **Have fun!** 🥳`.trim().split('\n').map(line => line.trim()).join('\n');
 
     const randomIndex = Math.floor(Math.random() * questions.length);
     const q = questions[randomIndex];
@@ -52,7 +60,7 @@ activeTrivia.set(interaction.user.id, {
       .join("\n");
 
     await interaction.editReply(
-      `🧠 **Trivia Question:**\n${q.question}\n\n${formattedOptions}\n\nReply with **A**, **B**, **C**, or **D**.`
+      `${welcomeMsg}\n\n 🧠 **Trivia Question:**\n${q.question}\n\n${formattedOptions}\n\nReply with **A**, **B**, **C**, or **D**.`
     );
   },
 };
