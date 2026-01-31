@@ -9,17 +9,15 @@ export default {
     const state = activeTrivia.get(message.author.id);
     if (!state) return;
 
-    const userAnswer = message.content.trim();
+    const userAnswer = message.content.trim().toLowerCase();
+    if (!["a", "b", "c", "d"].includes(userAnswer)) return;
 
-    // correctAnswer can be "A", "B", "C", or "D"
-    const { isCorrect, message: response } = evaluateAnswer(
+    const { message: response } = evaluateAnswer(
       userAnswer,
       state.correctAnswer
     );
 
     await message.reply(response);
-
-    // stop further guesses
     activeTrivia.delete(message.author.id);
   },
 };

@@ -1,7 +1,6 @@
 import { SlashCommandBuilder, userMention } from "@discordjs/builders";
 import { activeTrivia } from "../helpers/activeTrivia.js";
 
-
 const questions = [
   {
     question: "What is the capital of France?",
@@ -47,11 +46,6 @@ export default {
 
     const letters = ["A", "B", "C", "D"];
     const correctAnswer = letters[q.correctIndex];
-
-activeTrivia.set(interaction.user.id, {
-  correctAnswer, // e.g. "C"
-});
-
 
     // Store correct answer for THIS user
     activeTrivia.set(interaction.user.id, { correctAnswer });
