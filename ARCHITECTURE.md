@@ -38,24 +38,28 @@ Giselle McNeill
 
   ```mermaid
 flowchart TB
-  App["src/app.js"] --> Init["src/helpers/index.js"]
-  Deploy["src/deploy-commands.js"]
+  Discord[(Discord API / Gateway)] <--> Login["client.login(process.env.TOKEN)"]
 
-  Init --> LoadCmds["src/helpers/loadCommands.js"]
-  Init --> LoadEvts["src/helpers/loadEvents.js"]
-  LoadCmds --> LoadFiles["src/helpers/loadFiles.js"]
-  LoadEvts --> LoadFiles
+  App["src/app.js\n(create Client + registries)"] --> Client["Discord Client\n(new Client(...))"]
+  App --> Login
+  Login --> Discord
 
-  LoadCmds --> Trivia["src/commands/trivia.js"]
+  App --> CmdReg["client.commands = new Collection()"]
+  App --> EvtReg["client.events = new Collection()"]
 
+  App --> Init["src/helpers/index.js\n(exports loaders; loads dotenv)"]
+  Init --> LoadEvts["loadEvents(client, src/events)\nsrc/helpers/loadEvents.js"]
+  Init --> LoadCmds["loadCommands(client, src/commands)\nsrc/helpers/loadCommands.js"]
   LoadEvts --> Ready["src/events/ready.js"]
   LoadEvts --> IC["src/events/interactionCreate.js"]
   LoadEvts --> MC["src/events/messageCreate.js"]
   LoadEvts --> Join["src/events/guildMemberAdd.js"]
 
+  LoadCmds --> Trivia["src/commands/trivia.js"]
   Trivia --> Active["src/helpers/activeTrivia.js"]
   Trivia --> Eval["src/helpers/evaluateAnswer.js"]
 ```
+
 
 
 
