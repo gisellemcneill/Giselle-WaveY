@@ -35,3 +35,35 @@
 Giselle McNeill
 
   (02/04/2026)
+
+  flowchart TB
+  %% ===== Entry points =====
+  App["src/app.js\n(bootstraps bot runtime)"] --> Loads["src/helpers/index.js\ninitializer"]
+  Deploy["src/deploy-commands.js\n(registers slash commands)"]
+
+  %% ===== Loading system =====
+  Loads --> LoadCmds["src/helpers/loadCommands.js"]
+  Loads --> LoadEvts["src/helpers/loadEvents.js"]
+  LoadCmds --> LoadFiles["src/helpers/loadFiles.js"]
+  LoadEvts --> LoadFiles
+
+  %% ===== Commands =====
+  LoadCmds --> CmdTrivia["src/commands/trivia.js"]
+  LoadCmds --> CmdMeme["src/commands/meme.js"]
+  CmdMeme --> MemeHelper["src/helpers/meme.js"]
+
+  %% ===== Events =====
+  LoadEvts --> EReady["src/events/ready.js"]
+  LoadEvts --> EInteract["src/events/interactionCreate.js"]
+  LoadEvts --> EMsg["src/events/messageCreate.js"]
+  LoadEvts --> EJoin["src/events/guildMemberAdd.js"]
+
+  %% ===== Trivia domain helpers =====
+  CmdTrivia --> ActiveTrivia["src/helpers/activeTrivia.js\n(session/state tracking)"]
+  CmdTrivia --> Eval["src/helpers/evaluateAnswer.js\n(answer checking)"]
+
+  %% ===== Fuzz testing =====
+  Fuzz["src/fuzz/fuzz-meme.js\n(fuzz tests)"] --> CmdMeme
+  Fuzz --> MemeHelper
+
+
