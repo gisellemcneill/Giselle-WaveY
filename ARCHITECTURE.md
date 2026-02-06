@@ -38,8 +38,10 @@ Giselle McNeill
 
   ```mermaid
 flowchart TB
-  App["src/app.js"] --> Init["src/helpers/index.js"]
-  Deploy["src/deploy-commands.js"]
+  Discord[(Discord API/Gateway)] <--> Client["Discord Client\n(created in src/app.js)"]
+
+  App["src/app.js"] --> Client
+  App --> Init["src/helpers/index.js"]
 
   Init --> LoadCmds["src/helpers/loadCommands.js"]
   Init --> LoadEvts["src/helpers/loadEvents.js"]
@@ -47,15 +49,11 @@ flowchart TB
   LoadEvts --> LoadFiles
 
   LoadCmds --> Trivia["src/commands/trivia.js"]
-
-  LoadEvts --> Ready["src/events/ready.js"]
   LoadEvts --> IC["src/events/interactionCreate.js"]
   LoadEvts --> MC["src/events/messageCreate.js"]
-  LoadEvts --> Join["src/events/guildMemberAdd.js"]
 
-  Trivia --> Active["src/helpers/activeTrivia.js"]
-  Trivia --> Eval["src/helpers/evaluateAnswer.js"]
 ```
+
 
 
 
