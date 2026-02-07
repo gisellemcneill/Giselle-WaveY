@@ -52,3 +52,12 @@ This system context diagram helps to display the relationship of how GitHub inte
 
 
 
+**Use Case Diagram: Audrey Simonnet**
+
+![Use Case Diagram](audrey_arch_diagram.png)
+
+This use case diagram models the core interactions between a Discord user and the Trivia Bot system. It identifies the primary functionalities available to the user and distinguishes between current functionality (in yellow) and planned future enhancements (in gray).
+
+The user can currently start a trivia session, and submit answers to questions. When trivia begins, the system displays a welcome message with instructions and the first question. The user's submitted answer is evaluated by the system, which then provides feedback indicating whether the answer is correct or incorrect.
+
+Future functionality is modeled using UML relationships to distinguish between required and optional system behavior. Displaying the correct answer after an incorrect user answer and answering a newly displayed question are represented using `<<extend>>`. In contrast, exiting the trivia and displaying the final score summary are modeled without the `<<extend>>`, since the score summary is always displayed whenever the trivia session ends and therefore represents required system behavior.
