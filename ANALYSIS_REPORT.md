@@ -63,3 +63,19 @@ For failed cases, I found that there was one failed case as displayed in the pic
 When thinking back to the process of creating our bot and testing it, I think we did a good job of thinking like a bad actor to think of issues ahead of time. I think that our code properly processes the user input as a result and can handle the responses for the most part besides if a null value is returned which I am not sure is entirely possible via discord. In the future, we plan on adding a feature to address wrong inputs to maybe give the user a second chance so I think we have been doing good with testing and accounting for how the user can/will act.
 
 
+
+**Scope Analysis Report : By Audrey Simonnet**
+
+**Efforts:**
+To evaluate the scope of our trivia bot, I tested the bot directly in Discord to experience it from a user's perspective. I intentionally tried different commands both incorrect and correct inputs, and edge cases to identify gaps in functionality and usability. In addition, in class, I reviewed feedback from testers and discussed their experiencexs using the bot. I also examined portions of our code to understand current functionality, including game flow, input handling, and user interaction, which helped identify limitations in our current implementation. Finally, I discussed with my team possible weaknesses and areas for improvement that they noticed.
+
+![Bot Test](audrey_bot_test.png)
+
+**Findings:**
+Through testing and discussion, I found that the bot currently limits gameplay to only one question at a time before requiring the user to input "/trivia" again.Every time "/trivia" is entered the bot repeats the beginning instructions, even if the user has already played multiple questions. This interrupts the flow of the game and makes the experience feel repetitive and inefficient. Expanding the bot to support multi-question rounds would significantly improve the overall user experience and make gameplay feel more complete. When this feature is added, it will also be necessary to add a way for the users to end the trivia game ("/exit") and for the trivia game to end automatically when there are no more questions.
+
+Additionally, I discovered that when a user answers a question incorrectly, the bot does not provide the correct answer. This limits the possible educational value of the game and leaves users without meaningful feedback. Expanding the bot to display the correct answer after an incorrect response would greatly improve clarity,learning opportunities, and overall user satisfaction.
+
+Next, I discovered that questions can be repeated multiple times in a row (as seen in the testing screenshot). Reviewing through the code, there is no mechanism that keeps track of which questions have been asked, and instead, questions are randomly selected every time. There is also a very limited number of questions (4), which increases the likelihold of questions being repeated. Expanding the bot's question bank and implementing a tracking system to prevent repeated questions within a round would resolve this issue.
+
+Finally, I found that there is no input validation. After being asked the question, users can enter any input, but the only accepted input is A, B, C, D in uppercase or lowercase. If users, enter invalid input, they are not informed that their respond is invalid, nor are they prompted to try again with the correct input. Expanding the bot to include proper input validation, and feedback on invalid answers would reduce confusion and make the bot more user-friendly.
