@@ -9,18 +9,24 @@
     "dev": "nodemon -r dotenv/config src/app.js",
     "prod": "node -r dotenv/config src/app.js",
     "test": "mocha -r esbuild-runner/register ./tests/trivia.spec.js --exit",
+    "fuzz": "node src/fuzzer/index.js",
     "coverage": "c8 npm test"
   },
-   "c8": {
+  "c8": {
     "all": true,
-    "include": ["src/**/*.js"],
+    "include": [
+      "src/**/*.js"
+    ],
     "exclude": [
       "**/*.spec.js",
       "**/*.test.js",
       "tests/**",
       "src/deploy-commands.js"
     ],
-    "reporter": ["text", "html"]
+    "reporter": [
+      "text",
+      "html"
+    ]
   },
   "keywords": [
     "discord",
@@ -43,6 +49,7 @@
     "esbuild": "^0.27.3",
     "esbuild-runner": "^2.2.1",
     "eslint": "^9.39.2",
+    "fast-check": "^4.5.3",
     "mocha": "^10.0.0",
     "nodemon": "^3.1.11"
   }
