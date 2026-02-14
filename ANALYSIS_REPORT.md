@@ -40,3 +40,22 @@ However, **several major components showed 0% coverage**, including the bot star
 
 Going forward, coverage could be improved by adding targeted tests for event handlers and helper functions. Expanding test breadth in these areas would increase confidence in system reliability and reduce the risk of runtime errors during real user interactions.
 
+
+
+**Fuzzer Test Analysis: Jayda Fountain**
+
+<img width="860" height="648" alt="Screenshot 2026-02-13 at 9 57 11 PM" src="https://github.com/user-attachments/assets/19b2b15e-ae79-418a-84e7-9f85346c88a3" />
+
+**Action**
+I wrote a fuzzer test to try and break our code so we can find gaps in our trivia bot without having to manually try a bunch of inputs in the discord chat. While writing the fuzzer, I decided to test our answer evaluating code because that is the main part of our program that can crash based on input. To accomplish this, I thought like a bad actor by changing the case of the inputs from lower to upper and vice versa to see if the output was the same. I also tried other inputs such as emojis, numbers, special symbols, extra spacing, repeated characters, and a null value to see if the code evaluates it correctly.
+
+**Result - Passes**
+After running the "npm run fuzz" command that I added, I found that in cases where the case of the answer was changed or extra spacing was added did not effect the evaluation which is great! If the user accidentally adds spacing after or before their answer, we do not need to worry. For emojis, numbers, and special symbols they also did not crash the code and simply processed it as a normal string and returned false. I did also try out repeated characters to see how the code would act and it returned false which makes sense but I wonder if we should look further into that in the future. If the user accidentally typed "AA" instead of "A" on accident, I wonder if we should check if only a's are used in the answer then it will be true no matter how many are used (when the correct answer is A). But either way, this fuzzer will help us test this no matter if we change it or not!
+
+**Result - Fails**
+For failed cases, I found that there was one failed case as displayed in the picture above. I found that if the value returned is null, the code as usual tries to make it lowercase to process the answer but since it is null, it cannot properly change it to lowercase in the first place, resulting in an error. To fix this, an if statement to check if the code is null first should be implemented so the code can catch the error and return an error message instead of crashing the bot.
+
+**Reflection**
+When thinking back to the process of creating our bot and testing it, I think we did a good job of thinking like a bad actor to think of issues ahead of time. I think that our code properly processes the user input as a result and can handle the responses for the most part besides if a null value is returned which I am not sure is entirely possible via discord. In the future, we plan on adding a feature to address wrong inputs to maybe give the user a second chance so I think we have been doing good with testing and accounting for how the user can/will act.
+
+
