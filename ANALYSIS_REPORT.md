@@ -32,7 +32,7 @@ Giselle McNeill
 
 To evaluate how thoroughly our automated test suite exercises the WaveY codebase, we ran test coverage using the c8 coverage tool integrated with Mocha. This analysis measured the percentage of executed statements, branches, functions, and lines across all source files in the src directory.
 
-Overall, the project achieved 16.88% statement and line coverage, 27.77% branch coverage, and 7.14% function coverage, indicating that the current tests focus primarily on specific core functionality rather than the entire system. The highest coverage occurred within the trivia feature, where src/commands/trivia.js and src/helpers/activeTrivia.js both reached 100% coverage across all metrics. This confirms that the trivia command workflow and internal trivia state management are fully exercised by the unit tests.
+Overall, the project achieved 16.88% statement and line coverage, 27.77% branch coverage, and 7.14% function coverage, indicating that the current tests focus primarily on specific core functionality rather than the entire system. The highest coverage occurred within the trivia feature, where src/commands/trivia.js and src/helpers/activeTrivia.js both reached 100% coverage across all metrics. This confirms that the trivia command workflow and internal trivia state management are fully exercised by the unit tests, which aligns with the work done by Giselle.
 
 However, several major components showed 0% coverage, including the bot startup logic (app.js), all event handlers (interactionCreate.js, messageCreate.js, guildMemberAdd.js, and ready.js), and most helper utilities such as evaluateAnswer.js and command loaders. These areas were not triggered by the current unit tests, which explains the lower overall coverage percentages.
 
