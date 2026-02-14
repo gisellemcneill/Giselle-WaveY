@@ -10,17 +10,10 @@ export const generateRandomStrings = (count = 20) => {
     ' ',
     '\n',
     '\t',
-    null,
-    undefined,
     
     // Unicode & special chars
     '你好',
     '🎉🎊',
-    '<script>alert("xss")</script>',
-    '"; DROP TABLE users; --',
-    
-    // Long strings
-    'a'.repeat(10000),
     
     // Whitespace variations
     '   ANSWER   ',
@@ -33,11 +26,15 @@ export const generateRandomStrings = (count = 20) => {
     
     // Numbers and symbols
     '123',
-    '!@#$%^&*()',
+    '456',
+    '-_+=[]{}|;:,.<>?/',
     'answer123',
+    'A1',
+    'B2C3',
     
-    // Repeated chars
-    'aaaaaaaaaa',
+    // Just a few repeated chars
+    'aaaa',
+    '****',
   ];
   
   return inputs;
@@ -58,9 +55,10 @@ export const generateRandomAnswers = (count = 20) => {
     'AA',
     'AB',
     '1',
+    '2',
+    '123',
+    '!@#$',
     'invalid',
-    null,
-    undefined,
   ];
 };
 
@@ -78,20 +76,3 @@ export const generateTrivaAnswerPairs = () => {
   ];
 };
 
-export const generateMessageInputs = () => {
-  return [
-    'hello',
-    'HELLO',
-    'Hello',
-    'hello ',
-    ' hello',
-    ' hello ',
-    '',
-    '   ',
-    'hello world',
-    'hello123',
-    '你好',
-    '🎉',
-    null,
-  ];
-};

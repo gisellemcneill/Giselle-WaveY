@@ -6,6 +6,7 @@
 import { evaluateAnswer } from '../helpers/evaluateAnswer.js';
 import {
   generateRandomStrings,
+  generateRandomAnswers,
   generateTrivaAnswerPairs,
 } from './inputGenerator.js';
 
@@ -13,10 +14,23 @@ export const fuzzEvaluateAnswer = () => {
   console.log('\n🧪 FUZZING evaluateAnswer()...\n');
 
   const testCases = generateTrivaAnswerPairs();
+  const randomStrings = generateRandomStrings();
+  const randomAnswers = generateRandomAnswers();
+  
+  // Create random pairings
+  const randomPairs = [];
+  for (let i = 0; i < Math.min(randomStrings.length, randomAnswers.length); i++) {
+    randomPairs.push({
+      user: randomStrings[i],
+      correct: randomAnswers[i],
+    });
+  }
+
+  const allTestCases = [...testCases, ...randomPairs];
   let passed = 0;
   let failed = 0;
 
-  testCases.forEach((testCase, index) => {
+  allTestCases.forEach((testCase, index) => {
     try {
       const result = evaluateAnswer(testCase.user, testCase.correct);
 
