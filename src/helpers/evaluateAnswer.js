@@ -7,3 +7,6 @@ export const evaluateAnswer = (userAnswer, correctAnswer) => {
         message: isCorrect ? "✅ Good Job!" : "❌ Better luck next time!",
     };
 };
+// put in correct answer with better luck next time
+// if input isn't a valid letter - tell them what they can input
+// where else should I do input checking?
