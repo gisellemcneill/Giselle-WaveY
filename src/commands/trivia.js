@@ -33,6 +33,15 @@ export default {
 
     await interaction.deferReply();
 
+    //check if user already has an active trivia session
+
+  const userId = interaction.user.id; 
+    if(activeTrivia.has(userId)){
+      return interaction.editReply(
+        `${userMention(userId)}, you already have an active trivia session! Finish it before starting a new one.`
+      );
+    }
+
     const welcomeMsg = `
     Welcome ${userMention(interaction.user.id)}, to the **WaveY Trivia Bot**! 🚀
     To play the game, you will be given trivia questions and **four answers** to choose from.      
@@ -48,7 +57,7 @@ export default {
     const correctAnswer = letters[q.correctIndex];
 
     // Store correct answer for THIS user
-    activeTrivia.set(interaction.user.id, { correctAnswer });
+    activeTrivia.set(userId, { correctAnswer });
     const formattedOptions = q.options
       .map((opt, i) => `**${letters[i]}.** ${opt}`)
       .join("\n");
