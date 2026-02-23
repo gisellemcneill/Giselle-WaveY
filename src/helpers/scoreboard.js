@@ -19,7 +19,7 @@ export function showScoreboard(interaction) {
   };
 
   // Send the embed
-  interaction.reply({ embeds: [embed], ephemeral: true });
+  interaction.followUp({ embeds: [embed], ephemeral: true });
 
   // Clear the active session
   activeTrivia.delete(userId);

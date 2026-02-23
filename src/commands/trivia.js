@@ -8,6 +8,7 @@ import {
 
 import { activeTrivia } from "../helpers/activeTrivia.js";
 import { evaluateAnswer } from "../helpers/evaluateAnswer.js";
+import { showScoreboard } from "../helpers/scoreboard.js";
 
 const questions = [
   {
@@ -77,26 +78,22 @@ export default {
       await interaction.reply(welcomeMsg);
     }
 
-    let questionCount = 0;
-
     // TODO: this is all currently filler for testing
-    while (questionCount < 5) {
+    while (true) {
+      const session = activeTrivia.get(userId);
+      if (!session) break;
+
+      if (session.questionCount >= 5) break;
+
       const randomIndex = Math.floor(Math.random() * questions.length);
       const q = questions[randomIndex];
-      
+
       const timedOut = await askQuestion(interaction, userId, q);
-      
-      // If player timed out, stop the loop
-      if (timedOut) return;
-      
-      questionCount++;
+      if (timedOut) break;
     }
 
-    const finalSession = activeTrivia.get(userId);
+    await showScoreboard(interaction);
     activeTrivia.delete(userId);
-    await interaction.followUp(
-      `🎉 Game over, ${userMention(userId)}! Final score: **${finalSession.score}/5**\nThanks for playing WaveY Trivia! 🌊`
-    );
   },
 };
 
@@ -125,7 +122,7 @@ async function askQuestion(interaction, userId, q) {
   return new Promise((resolve) => {
     const collector = questionMessage.createMessageComponentCollector({
       filter,
-      time: 60000,
+      time: 30000,
       max: 1
     });
 
@@ -163,15 +160,23 @@ async function askQuestion(interaction, userId, q) {
 
     collector.on("end", async (collected, reason) => {
         if (reason === "time" && collected.size === 0) {
-          activeTrivia.delete(userId);
+          session.questionCount += 1;
+          activeTrivia.set(userId, session);
+
+          const correctLetter = letters[q.correctIndex];
+          const correctText = q.options[q.correctIndex];
 
           const disabledRow = new ActionRowBuilder().addComponents(
             row.components.map((button) =>
               ButtonBuilder.from(button).setDisabled(true)
             )
           );
-          await questionMessage.edit({ // TODO: do we want to show the question again when time is up?
-            content: `⏰ Time's up!\n\n\n\nTry again with /trivia.🧠 **Trivia Question:**\n${q.question}`,
+
+          await questionMessage.edit({
+            content:
+              `🧠 **Trivia Question:**\n${q.question}\n\n` +
+              `⏰ **Time's up!**\n` +
+              `The correct answer was **${correctLetter}. ${correctText}**\n\n`,
             components: [disabledRow],
           });
           resolve(true);
