@@ -1,5 +1,13 @@
-import { SlashCommandBuilder, userMention } from "@discordjs/builders";
+import {
+  SlashCommandBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  userMention,
+} from "discord.js";
+
 import { activeTrivia } from "../helpers/activeTrivia.js";
+import { evaluateAnswer } from "../helpers/evaluateAnswer.js";
 
 const questions = [
   {
@@ -43,18 +51,59 @@ export default {
     const randomIndex = Math.floor(Math.random() * questions.length);
     const q = questions[randomIndex];
 
-
     const letters = ["A", "B", "C", "D"];
     const correctAnswer = letters[q.correctIndex];
-
-    // Store correct answer for THIS user
     activeTrivia.set(interaction.user.id, { correctAnswer });
-    const formattedOptions = q.options
-      .map((opt, i) => `**${letters[i]}.** ${opt}`)
-      .join("\n");
 
-    await interaction.editReply(
-      `${welcomeMsg}\n\n 🧠 **Trivia Question:**\n${q.question}\n\n${formattedOptions}\n\nReply with **A**, **B**, **C**, or **D**.`
+    // switched to buttons
+    const row = new ActionRowBuilder().addComponents(
+      letters.map((letter, index) =>
+        new ButtonBuilder()
+          .setCustomId(letter)
+          .setLabel(`${letter}. ${q.options[index]}`)
+          .setStyle(ButtonStyle.Primary)
+      )
     );
-  },
+
+    await interaction.editReply({
+      // displays welcome message every time here
+      content: `${welcomeMsg}\n\n🧠 **Trivia Question:**\n${q.question}\n\nChoose an answer below:`,
+      components: [row],
+    });
+
+    const filter = (i) => i.user.id === interaction.user.id;
+
+    const message = await interaction.fetchReply();
+
+    const collector = message.createMessageComponentCollector({
+      filter
+    });
+
+    collector.on("collect", async (buttonInteraction) => {
+      const userChoice = buttonInteraction.customId;
+
+      const correctLetter = correctAnswer;
+      const correctText = q.options[q.correctIndex];
+
+      const { message } = evaluateAnswer(
+        userChoice,
+        correctLetter,
+        correctText
+      );
+
+      const disabledRow = new ActionRowBuilder().addComponents(
+        row.components.map((button) =>
+          ButtonBuilder.from(button).setDisabled(true)
+        )
+      );
+
+      await buttonInteraction.update({
+        content: `🧠 **Trivia Question:**\n${q.question}\n${message}`,
+        components: [disabledRow],
+      });
+
+      activeTrivia.delete(interaction.user.id);
+      collector.stop();
+    });
+  }
 };

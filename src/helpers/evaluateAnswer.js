@@ -1,12 +1,11 @@
-export const evaluateAnswer = (userAnswer, correctAnswer) => {
+export const evaluateAnswer = (userAnswer, correctAnswer, correctText) => {
     const isCorrect = 
     userAnswer.toLowerCase().trim() === correctAnswer.toLowerCase().trim()
 
     return{
         isCorrect, 
-        message: isCorrect ? "✅ Good Job!" : "❌ Better luck next time!",
+        message: isCorrect 
+            ? `✅ Correct! **${correctAnswer}. ${correctText}**`
+            : `❌ Incorrect! The correct answer was **${correctAnswer}. ${correctText}**`,
     };
 };
-// put in correct answer with better luck next time
-// if input isn't a valid letter - tell them what they can input
-// where else should I do input checking?
