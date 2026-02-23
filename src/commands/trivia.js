@@ -51,7 +51,7 @@ export default {
     }
 
     const welcomeMsg = `
-    Welcome ${userMention(interaction.user.id)}, to the **WaveY Trivia Bot**! 🚀
+    Welcome ${userMention(userId)}, to the **WaveY Trivia Bot**! 🚀
     To play the game, you will be given trivia questions and **four answers** to choose from.      
     I will then tell you if you are ✅ **correct** or ❌ **incorrect**.
     For help, type \`/\` to see my commands.   
@@ -64,6 +64,19 @@ export default {
     const correctAnswer = letters[q.correctIndex];
     activeTrivia.set(interaction.user.id, { correctAnswer });
 
+    // Store correct answer for THIS user
+    activeTrivia.set(userId, {
+     //keep score and count of questions
+      correctAnswer: correctAnswer,
+      score: 0, 
+      questionCount: 1
+   });
+    const formattedOptions = q.options
+      .map((opt, i) => `**${letters[i]}.** ${opt}`)
+      .join("\n");
+
+    await interaction.editReply(
+      `${welcomeMsg}\n\n 🧠 **Trivia Question:**\n${q.question}\n\n${formattedOptions}\n\nReply with **A**, **B**, **C**, or **D**.`
     // switched to buttons
     const row = new ActionRowBuilder().addComponents(
       letters.map((letter, index) =>
