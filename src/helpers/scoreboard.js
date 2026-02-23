@@ -1,6 +1,5 @@
-// src/helpers/scoreboard.js
 import { activeTrivia } from "./activeTrivia.js";
-import { userMention } from "@discordjs/builders";
+import { userMention } from "discord.js";
 
 export function showScoreboard(interaction) {
   const userId = interaction.user.id;

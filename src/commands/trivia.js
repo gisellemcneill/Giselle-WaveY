@@ -62,21 +62,17 @@ export default {
 
     const letters = ["A", "B", "C", "D"];
     const correctAnswer = letters[q.correctIndex];
-    activeTrivia.set(interaction.user.id, { correctAnswer });
+    
+    //activeTrivia.set(interaction.user.id, { correctAnswer });
 
     // Store correct answer for THIS user
     activeTrivia.set(userId, {
      //keep score and count of questions
       correctAnswer: correctAnswer,
       score: 0, 
-      questionCount: 1
+      questionCount: 0
    });
-    const formattedOptions = q.options
-      .map((opt, i) => `**${letters[i]}.** ${opt}`)
-      .join("\n");
-
-    await interaction.editReply(
-      `${welcomeMsg}\n\n 🧠 **Trivia Question:**\n${q.question}\n\n${formattedOptions}\n\nReply with **A**, **B**, **C**, or **D**.`
+  
     // switched to buttons
     const row = new ActionRowBuilder().addComponents(
       letters.map((letter, index) =>
@@ -107,11 +103,24 @@ export default {
       const correctLetter = correctAnswer;
       const correctText = q.options[q.correctIndex];
 
-      const { message } = evaluateAnswer(
+      //switched {message} -> result
+      const result = evaluateAnswer(
         userChoice,
         correctLetter,
         correctText
       );
+
+      const session = activeTrivia.get(userId);
+      if(!session)return;
+
+      if (userChoice === correctLetter) {
+      session.score += 1;
+      }
+
+        session.questionCount += 1;
+        activeTrivia.set(userId, session);
+
+       
 
       const disabledRow = new ActionRowBuilder().addComponents(
         row.components.map((button) =>
@@ -120,11 +129,11 @@ export default {
       );
 
       await buttonInteraction.update({
-        content: `🧠 **Trivia Question:**\n${q.question}\n${message}`,
-        components: [disabledRow],
-      });
+  content: `🧠 **Trivia Question:**\n${q.question}\n${result.message}\n\n⭐ Score: ${session.score}/${session.questionCount}`,
+  components: [disabledRow],
+});
 
-      activeTrivia.delete(interaction.user.id);
+      //activeTrivia.delete(interaction.user.id);
       collector.stop();
     });
   }

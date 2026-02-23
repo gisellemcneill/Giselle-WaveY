@@ -1,11 +1,11 @@
-import { activeTrivia } from "../helpers/activeTrivia.js";
-import { evaluateAnswer } from "../helpers/evaluateAnswer.js";
 
 export default {
   name: "messageCreate",
   async execute(message) {
     if (message.author.bot) return;
-
+    },
+};
+    /*
     //Old code: 
     //const state = activeTrivia.get(message.author.id);
     //if (!state) return;
@@ -33,5 +33,5 @@ export default {
 
     //get rid of delete since implementing question count/exit command
     //activeTrivia.delete(message.author.id);
-  },
-};
+  */
+  
