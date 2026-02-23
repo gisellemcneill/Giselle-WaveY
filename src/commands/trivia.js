@@ -31,6 +31,7 @@ const questions = [
     correctIndex: 0
   }
 ];
+const letters = ["A", "B", "C", "D"]; // moved to global
 
 export default {
   data: new SlashCommandBuilder()
@@ -38,16 +39,22 @@ export default {
     .setDescription("Start a trivia game!"),
   
   async execute(interaction) {
+    if (!interaction.isRepliable()) return;
 
-    await interaction.deferReply();
+    // check if user already has an active trivia session
+    const userId = interaction.user.id;
 
-    //check if user already has an active trivia session
+    let deferred = false;
+    try {
+      await interaction.deferReply();
+      deferred = true;
+    } catch (e) {
+      // deferReply timed out, will try reply() directly
+    }
 
-  const userId = interaction.user.id; 
-    if(activeTrivia.has(userId)){
-      return interaction.editReply(
-        `${userMention(userId)}, you already have an active trivia session! Finish it before starting a new one.`
-      );
+    if (activeTrivia.has(userId)) {
+      const msg = `${userMention(userId)}, you already have an active trivia session! Finish it before starting a new one.`
+      return deferred ? interaction.editReply(msg) : interaction.reply(msg);
     }
 
     const welcomeMsg = `
@@ -57,70 +64,88 @@ export default {
     For help, type \`/\` to see my commands.   
     **Have fun!** 🥳`.trim().split('\n').map(line => line.trim()).join('\n');
 
-    const randomIndex = Math.floor(Math.random() * questions.length);
-    const q = questions[randomIndex];
-
-    const letters = ["A", "B", "C", "D"];
-    const correctAnswer = letters[q.correctIndex];
-    
-    //activeTrivia.set(interaction.user.id, { correctAnswer });
-
     // Store correct answer for THIS user
     activeTrivia.set(userId, {
-     //keep score and count of questions
-      correctAnswer: correctAnswer,
+      // Keep score and count of questions
       score: 0, 
       questionCount: 0
-   });
-  
-    // switched to buttons
-    const row = new ActionRowBuilder().addComponents(
-      letters.map((letter, index) =>
-        new ButtonBuilder()
-          .setCustomId(letter)
-          .setLabel(`${letter}. ${q.options[index]}`)
-          .setStyle(ButtonStyle.Primary)
-      )
-    );
-
-    await interaction.editReply({
-      // displays welcome message every time here
-      content: `${welcomeMsg}\n\n🧠 **Trivia Question:**\n${q.question}\n\nChoose an answer below:`,
-      components: [row],
     });
 
-    const filter = (i) => i.user.id === interaction.user.id;
+    if (deferred) {
+      await interaction.editReply(welcomeMsg);
+    } else {
+      await interaction.reply(welcomeMsg);
+    }
 
-    const message = await interaction.fetchReply();
+    let questionCount = 0;
 
-    const collector = message.createMessageComponentCollector({
-      filter
+    // TODO: this is all currently filler for testing
+    while (questionCount < 5) {
+      const randomIndex = Math.floor(Math.random() * questions.length);
+      const q = questions[randomIndex];
+      
+      const timedOut = await askQuestion(interaction, userId, q);
+      
+      // If player timed out, stop the loop
+      if (timedOut) return;
+      
+      questionCount++;
+    }
+
+    const finalSession = activeTrivia.get(userId);
+    activeTrivia.delete(userId);
+    await interaction.followUp(
+      `🎉 Game over, ${userMention(userId)}! Final score: **${finalSession.score}/5**\nThanks for playing WaveY Trivia! 🌊`
+    );
+  },
+};
+
+async function askQuestion(interaction, userId, q) {
+  const session = activeTrivia.get(userId);
+  if (!session) return true;
+
+  const correctLetter = letters[q.correctIndex];
+
+  const row = new ActionRowBuilder().addComponents(
+    letters.map((letter, index) =>
+      new ButtonBuilder()
+        .setCustomId(letter)
+        .setLabel(`${letter}. ${q.options[index]}`)
+        .setStyle(ButtonStyle.Primary)
+    )
+  );
+
+  const questionMessage = await interaction.followUp({
+    content: `${q.question}\n\nChoose an answer below:`,
+    components: [row],
+  });
+
+  const filter = (i) => i.user.id === interaction.user.id;
+
+  return new Promise((resolve) => {
+    const collector = questionMessage.createMessageComponentCollector({
+      filter,
+      time: 60000,
+      max: 1
     });
 
     collector.on("collect", async (buttonInteraction) => {
+      await buttonInteraction.deferUpdate();
+
       const userChoice = buttonInteraction.customId;
-
-      const correctLetter = correctAnswer;
       const correctText = q.options[q.correctIndex];
-
-      //switched {message} -> result
       const result = evaluateAnswer(
         userChoice,
         correctLetter,
         correctText
       );
 
-      const session = activeTrivia.get(userId);
-      if(!session)return;
-
       if (userChoice === correctLetter) {
-      session.score += 1;
+        session.score += 1;
       }
 
-        session.questionCount += 1;
-        activeTrivia.set(userId, session);
-
-       
+      session.questionCount += 1;
+      activeTrivia.set(userId, session);
 
       const disabledRow = new ActionRowBuilder().addComponents(
         row.components.map((button) =>
@@ -128,13 +153,29 @@ export default {
         )
       );
 
-      await buttonInteraction.update({
-  content: `🧠 **Trivia Question:**\n${q.question}\n${result.message}\n\n⭐ Score: ${session.score}/${session.questionCount}`,
-  components: [disabledRow],
-});
+      await buttonInteraction.editReply({
+        content: `🧠 **Trivia Question:**\n${q.question}\n${result.message}\n\n⭐ Score: ${session.score}/${session.questionCount}`,
+        components: [disabledRow],
+      });
 
-      //activeTrivia.delete(interaction.user.id);
-      collector.stop();
+      resolve(false);      
     });
-  }
-};
+
+    collector.on("end", async (collected, reason) => {
+        if (reason === "time" && collected.size === 0) {
+          activeTrivia.delete(userId);
+
+          const disabledRow = new ActionRowBuilder().addComponents(
+            row.components.map((button) =>
+              ButtonBuilder.from(button).setDisabled(true)
+            )
+          );
+          await questionMessage.edit({ // TODO: do we want to show the question again when time is up?
+            content: `⏰ Time's up!\n\n\n\nTry again with /trivia.🧠 **Trivia Question:**\n${q.question}`,
+            components: [disabledRow],
+          });
+          resolve(true);
+        }
+    });
+  });
+}
