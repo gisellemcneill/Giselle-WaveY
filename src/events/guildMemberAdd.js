@@ -1,23 +1,23 @@
 import { userMention } from "discord.js";
 
-const CHANNEL_NAME = process.env.CHANNEL_NAME;
+// const CHANNEL_NAME = process.env.CHANNEL_NAME;
 //const MEME_URL = process.env.MEME_URL || "";
 
-const event = {
-  name: "guildMemberAdd",
-  async execute(member) {
-    const channel = member.guild.channels.cache.find(
-      (channel) => channel.name === CHANNEL_NAME
-    );
+// const event = {
+//   name: "guildMemberAdd",
+//   async execute(member) {
+//     const channel = member.guild.channels.cache.find(
+//       (channel) => channel.name === CHANNEL_NAME
+//     );
 
 
-    /*
-      TODO: Change getWelcomeMessage to getWelcomeMessageWithMeme to send a meme to welcome your user.
-    */
-    const welcomeMessage = await getWelcomeMessage(member.id);
-    channel.send(welcomeMessage);
-  },
-};
+//     /*
+//       TODO: Change getWelcomeMessage to getWelcomeMessageWithMeme to send a meme to welcome your user.
+//     */
+//     const welcomeMessage = await getWelcomeMessage(member.id);
+//     channel.send(welcomeMessage);
+//   },
+// };
 
 const getWelcomeMessage = (userId) => {
   /*

@@ -7,7 +7,7 @@ export default {
     if (!commands) {
       await interaction.reply({
         content: "Bot commands are not loaded (client.commands is missing).",
-        ephemeral: true,
+        flags: 64,
       });
       return;
     }
@@ -16,25 +16,25 @@ export default {
     if (!command) {
       await interaction.reply({
         content: `Unknown command: ${interaction.commandName}`,
-        ephemeral: true,
+        flags: 64,
       });
       return;
     }
 
     try {
       await command.execute(interaction);
-    } catch (err) {
+    } 
+    catch (err) {
       console.error(err);
 
-      if (interaction.replied || interaction.deferred) {
-        await interaction.followUp({
+      if (interaction.deferred || interaction.replied) {
+        await interaction.editReply({
           content: "Something went wrong :(",
-          ephemeral: true,
         });
       } else {
         await interaction.reply({
           content: "Something went wrong :(",
-          ephemeral: true,
+          flags: 64, // ephemeral
         });
       }
     }
