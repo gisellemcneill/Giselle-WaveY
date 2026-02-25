@@ -153,7 +153,8 @@ export default {
     activeTrivia.set(userId, {
       // Keep score and count of questions
       score: 0, 
-      questionCount: 0
+      questionCount: 0,
+      asked : [] // Track asked questions to avoid repeats
     });
 
     if (deferred) {
@@ -163,21 +164,37 @@ export default {
     }
 
     // Cap questions at 10 and implement a timer for each question
-    while (true) {
-      const session = activeTrivia.get(userId);
-      if (!session) break;
+   while (true) {
+  const session = activeTrivia.get(userId);
+  if (!session) break;
 
-      if (session.questionCount >= 10) break;
+  // stop after 10 questions
+  if (session.questionCount >= 10) break;
 
-      const randomIndex = Math.floor(Math.random() * questions.length);
-      const q = questions[randomIndex];
+  // make sure session.asked exists (in case things got moved)
+  if (!Array.isArray(session.asked)) session.asked = [];
 
-      const timedOut = await askQuestion(interaction, userId, q);
-      if (timedOut) break;
-    }
+  // stop if we run out of unique questions
+  if (session.asked.length >= questions.length) break;
 
-    await showScoreboard(interaction);
-    activeTrivia.delete(userId);
+  // pick an unused question index
+  let randomIndex = Math.floor(Math.random() * questions.length);
+  while (session.asked.includes(randomIndex)) {
+    randomIndex = Math.floor(Math.random() * questions.length);
+  }
+
+  session.asked.push(randomIndex);
+  activeTrivia.set(userId, session);
+
+  const q = questions[randomIndex];
+
+  // ask question; if user explicitly exited, end session
+  const endedSession = await askQuestion(interaction, userId, q);
+  if (endedSession) break;
+}
+
+await showScoreboard(interaction);
+activeTrivia.delete(userId);
   },
 };
 
