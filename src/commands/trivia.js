@@ -126,6 +126,9 @@ async function askQuestion(interaction, userId, q) {
       max: 1
     });
 
+    //added for the exit command
+    session.collector = collector;
+
     collector.on("collect", async (buttonInteraction) => {
       await buttonInteraction.deferUpdate();
 
@@ -159,6 +162,10 @@ async function askQuestion(interaction, userId, q) {
     });
 
     collector.on("end", async (collected, reason) => {
+        if (reason === 'user_exited') {
+          return resolve(true); // This breaks the while loop immediately
+        }
+        
         if (reason === "time" && collected.size === 0) {
           session.questionCount += 1;
           activeTrivia.set(userId, session);

@@ -5,22 +5,22 @@ import { showScoreboard } from "../helpers/scoreboard.js";
 export default {
   data: new SlashCommandBuilder()
     .setName("exit")
-    .setDescription("Exit this round of trivia."),
+    .setDescription("Exit this round of trivia ✈️"),
 
   async execute(interaction) {
-    // 1. Check if trivia exists first so we can reply with an error if it doesn't
-    if (!activeTrivia.has(interaction.user.id)) {
-      return interaction.reply({
-        content: "There is no active trivia session for you.",
-        flags: 64, // Modern ephemeral
-      });
+    const userId = interaction.user.id;
+    const session = activeTrivia.get(userId);
+
+    if (!session) {
+        return interaction.reply({ content: "No active trivia session! 🤨", flags: 64 });
     }
 
-    // 2. Acknowledge the command immediately (required before using followUp)
-    await interaction.reply({ content: "Ending your session...", flags: 64 });
+    // STOP the collector. This triggers the 'end' event in trivia.js
+    if (session.collector) {
+        session.collector.stop('user_exited');
+    }
 
-    // 3. Let the helper handle the rest! 
-    // It will find the score, send the GIF embed, and delete the session.
-    return showScoreboard(interaction);
+    // Just acknowledge the exit
+    return interaction.reply({ content: "Ending your trivia session...😤", flags: 64 });
   },
 };
