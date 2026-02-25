@@ -78,12 +78,12 @@ export default {
       await interaction.reply(welcomeMsg);
     }
 
-    // TODO: this is all currently filler for testing
+    // Cap questions at 10 and implement a timer for each question
     while (true) {
       const session = activeTrivia.get(userId);
       if (!session) break;
 
-      if (session.questionCount >= 5) break;
+      if (session.questionCount >= 10) break;
 
       const randomIndex = Math.floor(Math.random() * questions.length);
       const q = questions[randomIndex];
