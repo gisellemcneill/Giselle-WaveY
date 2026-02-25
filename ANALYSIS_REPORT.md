@@ -24,6 +24,18 @@ By:
 Giselle McNeill 
 02/13/2026
 
+![Test coverage results](test coverage.jpg)
+
+Test Coverage Analysis (c8 + Mocha) : By Aditi Menon
+
+To evaluate how thoroughly our automated test suite exercises the WaveY codebase, I ran test coverage using the c8 coverage tool integrated with Mocha. This analysis measured the percentage of executed statements, branches, functions, and lines across all source files in the src directory.
+
+Overall, the project achieved 16.88% statement and line coverage, 27.77% branch coverage, and 7.14% function coverage, indicating that the current tests focus primarily on specific core functionality rather than the entire system. The highest coverage occurred within the trivia feature, where src/commands/trivia.js and src/helpers/activeTrivia.js both reached 100% coverage across all metrics. This confirms that the trivia command workflow and internal trivia state management are fully exercised by the unit tests.
+
+However, several major components showed 0% coverage, including the bot startup logic (app.js), all event handlers (interactionCreate.js, messageCreate.js, guildMemberAdd.js, and ready.js), and most helper utilities such as evaluateAnswer.js and command loaders. These areas were not triggered by the current unit tests, which explains the lower overall coverage percentages.
+
+This coverage distribution reflects a common testing pattern in early development: focused validation of primary features while system-level and event-driven components remain untested. Going forward, coverage could be improved by adding targeted tests for event handlers and helper functions, as well as lightweight mocks to simulate Discord interactions. Expanding test breadth in these areas would increase confidence in system reliability and reduce the risk of runtime errors during real user interactions.
+
 
  **Test Coverage Analysis (c8 + Mocha) : By Aditi Menon**
 
