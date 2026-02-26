@@ -34,7 +34,7 @@ const questions = [
   { question: "Which number is a prime number?", options: ["15", "21", "17", "27"], correctIndex: 2, category: "stem" },
   { question: "What is the chemical formula for table salt?", options: ["NaCl", "KCl", "NaHCO3", "CaCl2"], correctIndex: 0, category: "stem" },
 
-  // ====================== Shows & Movies (20 questions) ======================
+  // Shows & Movies (20 questions)
   { question: "What was the biggest movie in terms of box office revenue in 2023?", options: ["Avatar: The Way of Water", "Wicked", "Barbie", "Oppenheimer"], correctIndex: 2, category: "shows_movies" },
   { question: "What was the biggest movie in terms of box office revenue in 2025?", options: ["Zootopia 2", "Avatar: Fire and Ash", "Superman", "Wicked 2"], correctIndex: 0, category: "shows_movies" },
   { question: "Which show features the character Eleven?", options: ["Stranger Things", "The Witcher", "Breaking Bad", "Friends"], correctIndex: 0, category: "shows_movies" },
