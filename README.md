@@ -8,14 +8,15 @@
 
 **Overview:**
 
-WaveY Trivia is an interactive Discord bot that lets users play a multiple-choice trivia game directly in a Discord server. 
+WaveY Trivia is an interactive Discord bot that lets users play a multiple-choice, categorized trivia game directly in a Discord server. 
 
-The bot lets users start a personal trivia session via a slash command. Each game presents the user with randomized questions, tracks the player's score, and provides immediate feedback after each answer.
+The bot lets users start a personal trivia session via a slash command. Each game presents the user with four categories, randomized questions, tracks the player's score, and provides immediate feedback after each answer.
 
 **Features:**
 - Start a game with "/trivia"
 - Personalized welcome message with instructions
-- Multiple choice questions
+- Interactive category buttons
+- Multiple-choice categorized questions
 - Interactive buttons to choose answers
 - Immediate correct/incorrect feedback
 - Automatic progression through questions
@@ -26,9 +27,13 @@ The bot lets users start a personal trivia session via a slash command. Each gam
 
 The user can run the "/trivia" command to launch their own trivia game!
 
-To begin the game, the bot will print a personal welcome message with instructions. This will be followed by a question and 4 multiple choice answers. 
+To begin the game, the bot will print a personal welcome message with instructions. 
 
-After selecting an answer using buttons, the user can then be notified if the answer to the prompted question is correct or incorrect.
+Then, four interactive buttons will appear, allowing the user to select a category. Once a category is selected, the bot will confirm the user's choice and begin the game.
+
+This will be followed by a categorized question and 4 multiple choice answers. 
+
+After selecting an answer using the interactive buttons, the user can then be notified if the answer to the prompted question is correct or incorrect.
 
 The Trivia Bot will post a "Correct!" or "Incorrect!" in the Discord server, and if incorrect, the correct answer will be displayed as well. The bot will also show your score throughout the game. The game consists of 10 questions, so as the game progresses, the bot will update your score and display it in the chat.
 
@@ -40,6 +45,8 @@ Once the user completes 10 questions, the scoreboard will appear, displaying the
 **Session Management:** 
 
 The bot will only allow one active game session per user, if another instance of a game is attempted the bot will inform the user that they already have an active game going. 
+
+Timeout features are implemented for both categories and multiple-choice buttons. If no button is selected after 30 seconds, the bot will time the user out to protect the session. The user will be informed and can now safely create a new game whenever they would like. 
 
 **Ending Game Early:**
 
@@ -73,7 +80,7 @@ CLIENT_ID=your_application_client_id
 GUILD_ID=your_test_server_id
 ```
 
-- Sync slash commands in terminal
+- Sync slash commands in the terminal
 (when commands are updated) 
 
 ```bash
@@ -88,6 +95,7 @@ npm start
 
 After running:
 The bot should respond to /trivia once coming online
+
 
 
 
