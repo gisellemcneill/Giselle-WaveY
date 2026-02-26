@@ -13,6 +13,7 @@ WaveY Trivia is an interactive Discord bot that lets users play a multiple-choic
 The bot lets users start a personal trivia session via a slash command. Each game presents the user with four categories, randomized questions, tracks the player's score, and provides immediate feedback after each answer.
 
 **Features:**
+- When the bot comes online, a message displays
 - Start a game with "/trivia"
 - Personalized welcome message with instructions
 - Interactive category buttons
@@ -24,6 +25,8 @@ The bot lets users start a personal trivia session via a slash command. Each gam
 - Exit command to end game early with "/exit"
 
 **GamePlay:**
+
+When the bot comes online, it will prompt the user to use the /trivia command in the text channel  
 
 The user can run the "/trivia" command to launch their own trivia game!
 
@@ -95,6 +98,7 @@ npm start
 
 After running:
 The bot should respond to /trivia once coming online
+
 
 
 
