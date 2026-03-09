@@ -12,11 +12,11 @@ export async function offerMiniChallenge(interaction, currentScore, currentCateg
   if (!session) return { points: currentScore, sessionData: session };
 
   // Pick challenge type
-  const challengeType = Math.random() < 0.5 ? "popQuiz" : "categorySpecific";
+  const challengeType = Math.random() < 0.5 ? "popQuiz" : "doublePoints";
   let challenge;
   if (challengeType === "popQuiz") {
     const randomIndex = Math.floor(Math.random() * questions.length);
-    challenge = { ...questions[randomIndex], points: 2 };
+    challenge = { ...questions[randomIndex], points: 1 };
   } else {
     const categoryQuestions = questions.filter(q => q.category === currentCategory);
     if (categoryQuestions.length === 0) return { points: currentScore, sessionData: session };
@@ -25,7 +25,7 @@ export async function offerMiniChallenge(interaction, currentScore, currentCateg
   }
 
 
-  const typeLabel = challengeType === "popQuiz" ? "Pop Quiz" : "Category-Specific Challenge";
+  const typeLabel = challengeType === "popQuiz" ? "Pop Quiz" : "Double Points!";
   const bonusEmbed = new EmbedBuilder()
     .setTitle("🎁 BONUS ROUND!")
     .setDescription("Do you want to attempt a bonus question?")

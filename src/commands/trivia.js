@@ -133,7 +133,11 @@ export default {
       2) To play the game, you will be given trivia questions and **four answers** to choose from.   
       3) I will then tell you if you are ✅ **correct** or ❌ **incorrect**, and tell you the correct answer.
       4) You can play up to 10 questions per game, and your score will be tracked along the way.
-      5) You also have 30 seconds to answer each question, so be quick! ⏰ 
+      5) If you are lucky you could be offered up to two bonus questions! 
+          Pop Quiz: A random question from any category for 1 extra point.
+          Double Points: A question from your chosen category that is worth 2 points instead of 1!
+        You will be given 30 seconds to accept or decline the bonus question 🙋
+      6) You also have 30 seconds to answer each question, so be quick! ⏰ 
       All the best, and may the trivia odds be ever in your favor! 🏆
       **Note:** If you want to exit the game early, use the command "/exit" to end your session and see your final score.
       **Have fun!** 🥳`.trim().split('\n').map(line => line.trim()).join('\n');
