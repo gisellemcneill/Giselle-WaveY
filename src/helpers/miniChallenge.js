@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
-import { questions } from "../commands/trivia.js";
+import { questions } from "../questions.js"; // questions are now stored in questions.js
 import { activeTrivia } from "../helpers/activeTrivia.js";
 
 /**

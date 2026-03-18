@@ -6,7 +6,7 @@ import {
   userMention,
 } from "discord.js";
 
-import { questions } from "../questions.js";
+import { questions } from "../questions.js"; // questions are now stored in questions.js
 import { activeTrivia } from "../helpers/activeTrivia.js";
 import { evaluateAnswer } from "../helpers/evaluateAnswer.js";
 import { showScoreboard } from "../helpers/scoreboard.js";
@@ -41,7 +41,7 @@ export default {
     const welcomeMsg = `
       Welcome ${userMention(userId)}, to the **WaveY Trivia Bot**! 🚀
       📢 **READ BEFORE YOU START PLAYING:** 📢
-      1) To start off, you can choose the category you want to play in, and then we will get started!
+      1) To start off, you can choose the category and difficulty you want to play in, and then we will get started!
       2) To play the game, you will be given trivia questions and **four answers** to choose from.   
       3) I will then tell you if you are ✅ **correct** or ❌ **incorrect**, and tell you the correct answer.
       4) You can play up to 10 questions per game, and your score will be tracked along the way.
@@ -123,7 +123,7 @@ export default {
 
         // confirm category and remove buttons
         await buttonInteraction.update({
-          content: `You chose **${buttonInteraction.component.label}**! Let's start the trivia. 🎉`,
+          content: `You chose **${buttonInteraction.component.label}**! `,
           components: [],
         });
 
@@ -149,6 +149,66 @@ export default {
   // check if valid category was selected
   const sessionAfterCategory = activeTrivia.get(userId);
   if (!categorySuccess || !sessionAfterCategory?.category) {
+    activeTrivia.delete(userId);
+    return;
+  }
+
+  // ADD DIFFICULTY SELECTION
+  const difficultyButtons = new ActionRowBuilder().addComponents(
+    [
+      { name: "Easy", style: ButtonStyle.Success },
+      { name: "Medium", style: ButtonStyle.Primary },
+      { name: "Hard", style: ButtonStyle.Danger },
+    ].map(diff =>
+      new ButtonBuilder()
+        .setCustomId(`difficulty_${diff.name.toLowerCase()}`)
+        .setLabel(diff.name)
+        .setStyle(diff.style)
+    )
+  );
+
+  const difficultyMessage = await interaction.followUp({
+    content: "Now choose your difficulty! 💪",
+    components: [difficultyButtons],
+  });
+
+  const difficultySelected = new Promise((resolve) => {
+    const collector = difficultyMessage.createMessageComponentCollector({
+      filter: i => i.user.id === userId,
+      max: 1,
+      time: 30000,
+    });
+
+    collector.on("collect", async (buttonInteraction) => {
+      const session = activeTrivia.get(buttonInteraction.user.id);
+      if (!session) return resolve(false);
+
+      const chosenDifficulty = buttonInteraction.customId.replace("difficulty_", "");
+      session.difficulty = chosenDifficulty;
+      activeTrivia.set(buttonInteraction.user.id, session);
+
+      await buttonInteraction.update({
+        content: `Difficulty set to **${buttonInteraction.component.label}**! Good luck 🍀`,
+        components: [],
+      });
+
+      resolve(true);
+    });
+
+    collector.on("end", async (collected) => {
+      if (collected.size === 0) {
+        await difficultyMessage.edit({
+          content: "⏰ You didn't choose a difficulty in time!",
+          components: [],
+        });
+        resolve(false);
+      }
+    });
+  });
+
+  const difficultySuccess = await difficultySelected;
+  const sessionAfterDifficulty = activeTrivia.get(userId);
+  if (!difficultySuccess || !sessionAfterDifficulty?.difficulty) {
     activeTrivia.delete(userId);
     return;
   }
@@ -199,7 +259,8 @@ activeTrivia.set(userId, session);
 
 
   // Filter questions for this category
-  const categoryQuestions = questions.filter(q => q.category === session.category);
+  const categoryQuestions = questions.filter(
+    q => q.category === session.category && q.difficulty == session.difficulty);
 
   // Stop after 10 questions
   if (session.questionCount >= 10) break;
