@@ -12,7 +12,9 @@ import { evaluateAnswer } from "../helpers/evaluateAnswer.js";
 import { showScoreboard } from "../helpers/scoreboard.js";
 import { saveAttempt } from "../helpers/leaderboard.js";
 import { getLeaderboard } from "../helpers/leaderboard.js";
+import { offerMiniChallenge } from "../helpers/miniChallenge.js";
 
+/*
 export const questions = [
   // STEM (20 questions)
   { question: "Which data structure follows FIFO?", options: ["Stack", "Queue", "Tree", "Graph"], correctIndex: 1, category: "stem" },
@@ -100,7 +102,7 @@ export const questions = [
   { question: "Which singer released 'Hello' in 2015?", options: ["Adele","Taylor Swift","Ed Sheeran","Beyonce"], correctIndex: 0, category: "pop_culture" },
   { question: "Which TV series features Sheldon Cooper?", options: ["The Big Bang Theory","Friends","Modern Family","Community"], correctIndex: 0, category: "pop_culture" },
   { question: "Which video game features Link as the main character?", options: ["The Legend of Zelda","Mario Kart","Sonic","Fortnite"], correctIndex: 0, category: "pop_culture" }
-];
+]; */
 
  const funFacts = [
   "Honey never spoils.",
@@ -363,7 +365,6 @@ activeTrivia.set(userId, session);
       console.error("Mini-challenge failed:", err);
     }
   }
-
 
   // Filter questions for this category
   const categoryQuestions = questions.filter(
